@@ -79,7 +79,7 @@ def add():
         if leave_year == "none" or leave_year == "None" or leave_year == "n" or leave_year == "N":
             leave_year = "NULL"
         add_member(name, band_name, ideology, join_year, leave_year)
-        print(f"You have added {name} as a member of {band_name}.")
+        
 
 def update():
     pass

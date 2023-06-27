@@ -64,7 +64,7 @@ def add_member(name, band, ideology, join_year, leave_year):
 
             cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band}'), (SELECT id from members WHERE members.name ='{name}') );")
             if join_year == "NULL" and leave_year == "NULL":
-                print(f"You have added the band member {name}, with the ideology '{ideology}'.")
+                print(f"You have added the band member {name}, with the ideology '{ideology} as a member of {band}'.")
             if join_year == "NULL" and leave_year != "NULL":
                 cursor.execute(f"INSERT INTO timeframes (bands_members_id, left_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name ='{band}') and bands_members.member_id = (SELECT id from members WHERE members.name ='{name}')), {leave_year} );")
                 print(f"You have added the band member {name}, with the ideology '{ideology}' who left {band} in {leave_year}.")
