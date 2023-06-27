@@ -1,11 +1,12 @@
 
 import psycopg2
 from psycopg2 import Error
+from password import PW
 
 def add_band(name, ideology, logo=False):
     try:
         connection = psycopg2.connect(user="huomhxoy",
-                                    password="m6RnaMWGNxrURmWMSS_WWK3eiLwO93BY",
+                                    password=PW,
                                     host="snuffleupagus.db.elephantsql.com",
                                     port="5432",
                                     database="huomhxoy")
