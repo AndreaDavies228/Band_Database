@@ -1,15 +1,15 @@
 
 import psycopg2
 from psycopg2 import Error
-from password import PW
+from config import *
 
 def add_band(name, ideology, logo=False):
     try:
-        connection = psycopg2.connect(user="huomhxoy",
-                                    password=PW,
-                                    host="snuffleupagus.db.elephantsql.com",
-                                    port="5432",
-                                    database="huomhxoy")
+        connection = psycopg2.connect(user=config_user,
+                                    password=config_PW,
+                                    host=config_host,
+                                    port=config_port,
+                                    database=config_database)
 
         cursor = connection.cursor()
         cursor.execute(f"select exists(select 1 from bands where name='{name}')")

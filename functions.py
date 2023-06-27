@@ -51,7 +51,7 @@ def add():
         else:
             add_band(band_name, ideology, logo)
     
-        value2 = input("Would you also like to add band members for this band?")
+        value2 = input("Would you also like to add band members for this band? ")
         if value2 == "Yes" or value2 == "yes" or value2 == "Y" or value2 == "y":
             name = input("Please enter the name of the band member. ")
             ideology = input("Please enter the ideology of the band member. If you don't know please enter 'None'. ")
