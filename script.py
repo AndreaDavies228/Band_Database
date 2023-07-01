@@ -3,7 +3,7 @@
 from functions import *
 
 print("Welcome to the band database.")
-#language = set_language()
+
 while True:
   action = selection()
                                           
@@ -11,7 +11,6 @@ while True:
     add()
   if action == "U":
     update()
-    print("This has not been implemented yet")
   if action == "S":
     search()
     print("This has not been implemented yet")

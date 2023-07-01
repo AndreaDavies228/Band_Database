@@ -85,3 +85,83 @@ def add_member(name, band, ideology, join_year, leave_year):
             cursor.close()
             connection.close()
             print("The connection to the database is closed.")
+
+def name_check(name):
+    print("Checking entry exists in database...")
+    try:
+        connection = psycopg2.connect(user=config_user,
+                                    password=config_PW,
+                                    host=config_host,
+                                    port=config_port,
+                                    database=config_database)
+
+        cursor = connection.cursor()
+        cursor.execute(f"select exists(select 1 from bands where name='{name}')")
+        exists = cursor.fetchall()
+
+        
+    except (Exception, Error) as error:
+        print("Error while connecting to the database.", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+    
+    if exists == [(True,)]:
+        print("This entry is in the databse.")
+        return True
+    if exists == [(False,)]:
+        return False
+
+def update_function(type, band_name="", new_band_name="", ideology="", logo="", member_name="", new_member_name="", joined="", left=""):
+    try:
+        connection = psycopg2.connect(user=config_user,
+                                    password=config_PW,
+                                    host=config_host,
+                                    port=config_port,
+                                    database=config_database)
+
+        cursor = connection.cursor()
+
+        if type == "delete_band":
+            cursor.execute(f"delete from bands where name='{band_name}'")
+            print(f"Deleted {band_name}.")
+        if type == "update_band_name":
+            cursor.execute(f"update bands name = '{new_band_name}' where name='{band_name}'")
+            print(f"Renamed {band_name} to {new_band_name}.")
+        if type == "update_band_ideology":
+            cursor.execute(f"update bands ideology = '{ideology}' where name='{band_name}'")
+            print(f"Changed ideology for {band_name} to {ideology}.")
+        if type == "update_band_logo":
+            cursor.execute(f"update logos logo = '{logo}' where band_id =(SELECT id from bands WHERE bands.name ='{band_name}')")
+            print(f"Changed logo for {band_name} to {logo}.")
+        if type == "delete_member":
+            cursor.execute(f"delete from members where name='{member_name}'")
+            print(f"Deleted {member_name}.")
+        if type == "update_member_name":
+            cursor.execute(f"update members name = '{new_member_name}' where name='{member_name}'")
+            print(f"Renamed {member_name} to {new_member_name}.")        
+        if type == "update_member_ideology":
+            cursor.execute(f"update members ideology = '{ideology}' where name='{member_name}'")
+            print(f"Changed ideology for {member_name} to {ideology}.")
+        if type == "remove_member_band_membership":
+            cursor.execute(f"delete from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}')")
+            print(f"{member_name} is no long connected to {band_name}.")  
+        if type == "add_member_band_membership":
+            cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band_name}'), (SELECT id from members WHERE members.name ='{member_name}')")
+            print(f"{member_name} is now connected to {band_name}.") 
+        if type == "update_joined_year":
+            cursor.execute(f"update timeframes joined_year = {joined} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'))")
+            print(f"Updated the year {member_name} joined {band_name} to {joined}.")  
+        if type == "update_left_year":
+            cursor.execute(f"update timeframes left_year = {left} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'))")
+            print(f"Updated the year {member_name} left {band_name} to {joined}.")  
+
+
+    except (Exception, Error) as error:
+        print("Error while connecting to the database.", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+            print("The connection to the database is closed.")
