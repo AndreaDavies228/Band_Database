@@ -1,5 +1,0 @@
-config_user="huomhxoy"
-config_PW="3bOWQLLlpmkoBjP7wy5KEex28iheCETA"
-config_host="snuffleupagus.db.elephantsql.com"
-config_port="5432"
-config_database="huomhxoy"
