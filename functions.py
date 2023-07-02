@@ -40,14 +40,22 @@ def add():
             ideology = input("Please enter the ideology of the band member. If you don't know please enter 'None'. ")
             join_year = input("Please enter the year they joined the band. If you don't know please enter 'None'. ")
             leave_year = input("Please enter the year they left the band. If you don't know please enter 'None'. ")
-            if ideology == "none" or ideology == "None" or ideology == "n" or ideology == "N":
-                ideology = "NULL"
-            if join_year == "none" or join_year == "None" or join_year == "n" or join_year == "N":
-                join_year = "NULL"
-            if leave_year == "none" or leave_year == "None" or leave_year == "n" or leave_year == "N":
-                leave_year = "NULL"
-            print("Now accessing the database, please wait...")
-            add_member(name, band_name, ideology, join_year, leave_year)
+            while True:
+                confirm = input(f"{name} with ideology {ideology} will be added as a member of {band_name}, with join year: {join_year} and leave year: {leave_year}. Press 'Y' to confirm and 'N' to cancel. ")
+                if confirm.lower() == "n" or confirm.lower() == "yes":
+                    if ideology == "none" or ideology == "None" or ideology == "n" or ideology == "N":
+                        ideology = "NULL"
+                    if join_year == "none" or join_year == "None" or join_year == "n" or join_year == "N":
+                        join_year = "NULL"
+                    if leave_year == "none" or leave_year == "None" or leave_year == "n" or leave_year == "N":
+                        leave_year = "NULL"
+                    print("Now accessing the database, please wait...")
+                    add_member(name, band_name, ideology, join_year, leave_year)
+                if confirm.lower() == "n" or confirm.lower() == "no":
+                    return
+                else:
+                    print("Invalid input. Enter 'Y' or 'N' to confirm or cancel.")
+                    continue
         else:
             return    
 
@@ -57,14 +65,22 @@ def add():
         ideology = input("Please enter the ideology of the band member. If you don't know please enter 'None'. ")
         join_year = input("Please enter the year they joined the band. If you don't know please enter 'None'. ")
         leave_year = input("Please enter the year they left the band. If you don't know please enter 'None'. ")
-        if ideology == "none" or ideology == "None" or ideology == "n" or ideology == "N":
-            ideology = "NULL"
-        if join_year == "none" or join_year == "None" or join_year == "n" or join_year == "N":
-            join_year = "NULL"
-        if leave_year == "none" or leave_year == "None" or leave_year == "n" or leave_year == "N":
-            leave_year = "NULL"
-        print("Now accessing the database, please wait...")
-        add_member(name, band_name, ideology, join_year, leave_year)
+        while True:
+            confirm = input(f"{name} with ideology {ideology} will be added as a member of {band_name}, with join year: {join_year} and leave year: {leave_year}. Press 'Y' to confirm and 'N' to cancel. ")
+            if confirm.lower() == "n" or confirm.lower() == "yes":
+                if ideology == "none" or ideology == "None" or ideology == "n" or ideology == "N":
+                    ideology = "NULL"
+                if join_year == "none" or join_year == "None" or join_year == "n" or join_year == "N":
+                    join_year = "NULL"
+                if leave_year == "none" or leave_year == "None" or leave_year == "n" or leave_year == "N":
+                    leave_year = "NULL"
+                print("Now accessing the database, please wait...")
+                add_member(name, band_name, ideology, join_year, leave_year)
+            if confirm.lower() == "n" or confirm.lower() == "no":
+                return
+            else:
+                print("Invalid input. Enter 'Y' or 'N' to confirm or cancel.")
+                continue
     
     else:
         return
@@ -90,6 +106,7 @@ def update():
         if value.lower() == "delete" or value.lower() == "d":
             print("Now accessing the database, please wait...")
             update_function(type="delete_band", band_name=band_name)
+            return
         
         if value.lower() == "update" or value.lower() == "u":
             value = input("Would you like to update the band name, ideology or logo? " )
@@ -97,16 +114,19 @@ def update():
                 new_band_name = input("Please enter the new band name. ")
                 print("Now accessing the database, please wait...")
                 update_function(type="update_band_name", band_name=band_name, new_band_name=new_band_name)
+                return
 
             if value.lower() == "ideology" or value.lower() == "i":
                 ideology = input("Please enter the new band ideology. ")
                 print("Now accessing the database, please wait...")
                 update_function(type="update_band_ideology", band_name=band_name, ideology=ideology)
+                return
 
             if value.lower() == "logo" or value.lower() == "l":
                 logo = input("Please enter the new link to the band logo. ")
                 print("Now accessing the database, please wait...")
                 update_function(type="update_band_logo", band_name=band_name, logo=logo)
+                return
 
             else:
                 print("Invalid option. Returning to selection.")
@@ -137,6 +157,7 @@ def update():
         if value.lower() == "delete" or value.lower() == "d":
             print("Now accessing the database, please wait...")
             update_function(type="delete_member", member_name=member_name)
+            return
         
         if value.lower() == "update" or value.lower() == "u":
             value = input("Would you like to update the member name, ideology or band membership? ")
@@ -174,16 +195,19 @@ def update():
                 if value.lower() == "remove" or value.lower() == "remove band membership" or value.lower() == "r":
                     print("Now accessing the database, please wait...")
                     update_function(type="remove_member_band_membership", member_name=member_name, band_name=band_name)
+                    return
 
                 if value.lower() == "joined" or value.lower() == "join" or value.lower() == "j" or value.lower() == "year joined":
                     joined = input("Please enter the new year that they joined the band. ")
                     print("Now accessing the database, please wait...")
                     update_function(type="update_joined_year", member_name=member_name, band_name=band_name, joined=joined)
+                    return
 
                 if value.lower() == "left" or value.lower() == "leave" or value.lower() == "l" or value.lower() == "year left":
                     left = input("Please enter the new year that they left the band. ")
                     print("Now accessing the database, please wait...")
                     update_function(type="update_left_year", member_name=member_name, band_name=band_name, left=left)
+                    return
                 else:
                     print("Invalid option. Returning to selection.")
                     return
@@ -208,11 +232,13 @@ def search():
         band_name = input("Please enter the name of the band. ")
         print("Now accessing the database, please wait...")
         band_search(band_name)
+        return
 
     if value.lower() == "band member" or value.lower() == "member" or value.lower() == "m":
         member_name = input("Please enter the name of the band member. ")
         print("Now accessing the database, please wait...")
         member_search(member_name)
+        return
     
     if value.lower() == "c":
         return

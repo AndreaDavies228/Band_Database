@@ -2,6 +2,7 @@
 import psycopg2
 from psycopg2 import Error
 import config2
+from tabulate import tabulate
 
 def add_band(name, ideology, logo=False):
     name = name.title()
@@ -199,14 +200,14 @@ def band_search(band_name):
             print("This band isn't in the database, please check your spelling and try again.")
         else:
             print("Below are the band details:")
-            print(results)
+            print(tabulate(results, headers = ['Band', 'Ideology', 'Logo'], tablefmt = 'psql'))
             cursor.execute(f"SELECT members.name, members.ideology, timeframes.joined_year, timeframes.left_year from bands join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE bands.name ='{band_name}';")
             member_results = cursor.fetchall()
             if member_results == []:
                 print("No members for this band are in the database.")
             else:
                 print("This band contains the following members:")
-                print(member_results)
+                print(tabulate(member_results, headers = ['Name', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
         
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
@@ -235,7 +236,7 @@ def member_search(member_name):
             print("This band member isn't in the database, please check your spelling and try again.")
         else:
             print("Below are the member details:")
-            print(results)
+            print(tabulate(results, headers = ['Name', 'Ideology'], tablefmt = 'psql'))
             
             cursor.execute(f"SELECT bands.name, bands.ideology, timeframes.joined_year, timeframes.left_year from members join bands_members on members.id = bands_members.member_id  join bands on bands_members.band_id = bands.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE members.name ='{member_name}';")
             band_results = cursor.fetchall()
@@ -243,7 +244,7 @@ def member_search(member_name):
                 print("There are no bands this member has belonged to in the database.")
             else:            
                 print("They have belonged to the following bands:")
-                print(band_results)
+                print(tabulate(band_results, headers = ['Band', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
         
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
