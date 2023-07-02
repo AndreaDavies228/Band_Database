@@ -71,12 +71,12 @@ def add():
         
 
 def update():
-    value = input("Would you like to update a band or a band member? Press 'C' to cancel. ")
+    value1 = input("Would you like to update a band or a band member? Press 'C' to cancel. ")
 
-    if value.lower() == "band" or "b":
+    if value1.lower() == "band" or value1.lower() == "b":
         band_name = input("Please enter the name of the band you want to update. ")
         while True:
-            check = name_check(band_name)
+            check = name_check("band", band_name)
             if check == True:
                 break
             else:
@@ -87,12 +87,12 @@ def update():
                     continue
 
         value = input("Would you like to delete the band, or update band information. Press 'D' or 'U'. ")
-        if value.lower() == "delete" or "d":
+        if value.lower() == "delete" or value.lower() == "d":
             print("Now accessing the database, please wait...")
             update_function(type="delete_band", band_name=band_name)
         
-        if value.lower() == "update" or "u":
-            value = input("Would you like to update the band name, ideology or logo?" )
+        if value.lower() == "update" or value.lower() == "u":
+            value = input("Would you like to update the band name, ideology or logo? " )
             if value.lower() == "band name" or value.lower() == "name" or value.lower() == "n":
                 new_band_name = input("Please enter the new band name. ")
                 print("Now accessing the database, please wait...")
@@ -109,18 +109,20 @@ def update():
                 update_function(type="update_band_logo", band_name=band_name, logo=logo)
 
             else:
+                print("Invalid option. Returning to selection.")
                 return               
 
 
         else:
+            print("Invalid option. Returning to selection.")
             return
 
 
-    if value.lower() == "member" or value.lower == "b" or value.lower() == "band member":
+    if value1.lower() == "member" or value1.lower() == "m" or value1.lower() == "band member":
     
         member_name = input("Please enter the name of the member name you want to update. ")
         while True:
-            check = name_check(member_name)
+            check = name_check("member", member_name)
             if check == True:
                 break
             else:
@@ -132,11 +134,11 @@ def update():
         
         
         value = input("Would you like to delete the band member, or update band member information. Press 'D' or 'U'. ")  
-        if value.lower() == "delete" or "d":
+        if value.lower() == "delete" or value.lower() == "d":
             print("Now accessing the database, please wait...")
             update_function(type="delete_member", member_name=member_name)
         
-        if value.lower() == "update" or "u":
+        if value.lower() == "update" or value.lower() == "u":
             value = input("Would you like to update the member name, ideology or band membership? ")
             if value.lower() == "member name" or value.lower() == "name" or value.lower() == "n":
                 new_member_name = input("Please enter the new name of the member. ")
@@ -160,7 +162,7 @@ def update():
                 
                 
                 while True:
-                    check = name_check(band_name)
+                    check = name_check("band", band_name)
                     if check == True:
                         break
                     else:
@@ -183,15 +185,21 @@ def update():
                     print("Now accessing the database, please wait...")
                     update_function(type="update_left_year", member_name=member_name, band_name=band_name, left=left)
                 else:
+                    print("Invalid option. Returning to selection.")
                     return
 
             else:
+                print("Invalid option. Returning to selection.")
                 return 
 
         else:
+            print("Invalid option. Returning to selection.")
             return
-
+        
+    if value.lower() == "c":
+        return
     else:
+        print("Invalid option. Returning to selection.")
         return
     
 def search():
@@ -205,6 +213,10 @@ def search():
         member_name = input("Please enter the name of the band member. ")
         print("Now accessing the database, please wait...")
         member_search(member_name)
+    
+    if value.lower() == "c":
+        return
 
     else:
+        print("Invalid option. Returning to selection.")
         return

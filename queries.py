@@ -91,9 +91,9 @@ def add_member(name, band, ideology, join_year, leave_year):
             connection.close()
             print("The connection to the database is closed.")
 
-def name_check(name):
+def name_check(type, name):
     name = name.title()
-    print("Checking entry exists in database...")
+    print(f"Checking if {name} exists in the database...")
     try:
         connection = psycopg2.connect(user=config2.user,
                                     password=config2.PW,
@@ -102,7 +102,10 @@ def name_check(name):
                                     database=config2.database)
 
         cursor = connection.cursor()
-        cursor.execute(f"select exists(select 1 from bands where name='{name}')")
+        if type == "band":
+            cursor.execute(f"select exists(select 1 from bands where name='{name}')")
+        if type == "member":
+            cursor.execute(f"select exists(select 1 from members where name='{name}')")
         exists = cursor.fetchall()
 
         
@@ -136,38 +139,39 @@ def update_function(type, band_name="", new_band_name="", ideology="", logo="", 
         cursor = connection.cursor()
 
         if type == "delete_band":
-            cursor.execute(f"delete from bands where name='{band_name}'")
+            cursor.execute(f"delete from bands where name='{band_name}';")
             print(f"Deleted {band_name}.")
         if type == "update_band_name":
-            cursor.execute(f"update bands name = '{new_band_name}' where name='{band_name}'")
+            cursor.execute(f"update bands set name = '{new_band_name}' where name='{band_name}';")
             print(f"Renamed {band_name} to {new_band_name}.")
         if type == "update_band_ideology":
-            cursor.execute(f"update bands ideology = '{ideology}' where name='{band_name}'")
+            cursor.execute(f"update bands set ideology = '{ideology}' where name='{band_name}';")
             print(f"Changed ideology for {band_name} to {ideology}.")
         if type == "update_band_logo":
-            cursor.execute(f"update logos logo = '{logo}' where band_id =(SELECT id from bands WHERE bands.name ='{band_name}')")
+            cursor.execute(f"update logos set logo = '{logo}' where band_id =(SELECT id from bands WHERE bands.name ='{band_name}');")
             print(f"Changed logo for {band_name} to {logo}.")
         if type == "delete_member":
-            cursor.execute(f"delete from members where name='{member_name}'")
+            cursor.execute(f"delete from members where name='{member_name}';")
             print(f"Deleted {member_name}.")
         if type == "update_member_name":
-            cursor.execute(f"update members name = '{new_member_name}' where name='{member_name}'")
+            cursor.execute(f"update members set name = '{new_member_name}' where name='{member_name}';")
             print(f"Renamed {member_name} to {new_member_name}.")        
         if type == "update_member_ideology":
-            cursor.execute(f"update members ideology = '{ideology}' where name='{member_name}'")
+            cursor.execute(f"update members set ideology = '{ideology}' where name='{member_name}';")
             print(f"Changed ideology for {member_name} to {ideology}.")
         if type == "remove_member_band_membership":
-            cursor.execute(f"delete from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}')")
+            cursor.execute(f"delete from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}');")
             print(f"{member_name} is no long connected to {band_name}.")  
         if type == "add_member_band_membership":
             cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band_name}'), (SELECT id from members WHERE members.name ='{member_name}')")
             print(f"{member_name} is now connected to {band_name}.") 
         if type == "update_joined_year":
-            cursor.execute(f"update timeframes joined_year = {joined} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'))")
+            cursor.execute(f"update timeframes set joined_year = {joined} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'));")
             print(f"Updated the year {member_name} joined {band_name} to {joined}.")  
         if type == "update_left_year":
-            cursor.execute(f"update timeframes left_year = {left} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'))")
+            cursor.execute(f"update timeframes set left_year = {left} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'));")
             print(f"Updated the year {member_name} left {band_name} to {joined}.")  
+        connection.commit()
 
 
     except (Exception, Error) as error:
