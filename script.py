@@ -13,12 +13,11 @@ while True:
     update()
   if action == "S":
     search()
-    print("This has not been implemented yet")
   value = input("Would you like to perform another action? ")
   if value.lower() == "no" or value.lower() == "n":
     break
 
-print("Thank you for using the band database")
+print("Thank you for using the band database. We hope to see you again soon.")
 exit()
 
 

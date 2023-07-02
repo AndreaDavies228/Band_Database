@@ -1,15 +1,17 @@
 
 import psycopg2
 from psycopg2 import Error
-from config import *
+import config2
 
 def add_band(name, ideology, logo=False):
+    name = name.title()
+    ideology = ideology.title()
     try:
-        connection = psycopg2.connect(user=config_user,
-                                    password=config_PW,
-                                    host=config_host,
-                                    port=config_port,
-                                    database=config_database)
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
 
         cursor = connection.cursor()
         cursor.execute(f"select exists(select 1 from bands where name='{name}')")
@@ -35,12 +37,15 @@ def add_band(name, ideology, logo=False):
             print("The connection to the database is closed.")
 
 def add_member(name, band, ideology, join_year, leave_year):
+    name = name.title()
+    band = band.title()
+    ideology = ideology.title()
     try:
-        connection = psycopg2.connect(user="huomhxoy",
-                                    password="m6RnaMWGNxrURmWMSS_WWK3eiLwO93BY",
-                                    host="snuffleupagus.db.elephantsql.com",
-                                    port="5432",
-                                    database="huomhxoy")
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
 
         cursor = connection.cursor()
         cursor.execute(f"select exists(select 1 from members where name='{name}')")
@@ -87,13 +92,14 @@ def add_member(name, band, ideology, join_year, leave_year):
             print("The connection to the database is closed.")
 
 def name_check(name):
+    name = name.title()
     print("Checking entry exists in database...")
     try:
-        connection = psycopg2.connect(user=config_user,
-                                    password=config_PW,
-                                    host=config_host,
-                                    port=config_port,
-                                    database=config_database)
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
 
         cursor = connection.cursor()
         cursor.execute(f"select exists(select 1 from bands where name='{name}')")
@@ -114,12 +120,18 @@ def name_check(name):
         return False
 
 def update_function(type, band_name="", new_band_name="", ideology="", logo="", member_name="", new_member_name="", joined="", left=""):
+    band_name = band_name.title()
+    new_band_name = new_band_name.title()
+    ideology = ideology.title()
+    member_name = member_name.title()
+    new_member_name = new_member_name.title()
+    
     try:
-        connection = psycopg2.connect(user=config_user,
-                                    password=config_PW,
-                                    host=config_host,
-                                    port=config_port,
-                                    database=config_database)
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
 
         cursor = connection.cursor()
 
@@ -158,6 +170,77 @@ def update_function(type, band_name="", new_band_name="", ideology="", logo="", 
             print(f"Updated the year {member_name} left {band_name} to {joined}.")  
 
 
+    except (Exception, Error) as error:
+        print("Error while connecting to the database.", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+            print("The connection to the database is closed.")
+
+def band_search(band_name):
+    band_name = band_name.title()
+
+    try:
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
+
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT bands.name, bands.ideology, logos.logo FROM bands LEFT JOIN logos on bands.id = logos.band_id  WHERE name ='{band_name}' ;")
+        results = cursor.fetchall()
+        if results == []:
+            print("This band isn't in the database, please check your spelling and try again.")
+        else:
+            print("Below are the band details:")
+            print(results)
+            cursor.execute(f"SELECT members.name, members.ideology, timeframes.joined_year, timeframes.left_year from bands join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE bands.name ='{band_name}';")
+            member_results = cursor.fetchall()
+            if member_results == []:
+                print("No members for this band are in the database.")
+            else:
+                print("This band contains the following members:")
+                print(member_results)
+        
+    except (Exception, Error) as error:
+        print("Error while connecting to the database.", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+            print("The connection to the database is closed.")
+
+
+
+def member_search(member_name):
+    member_name = member_name.title()
+
+    try:
+        connection = psycopg2.connect(user=config2.user,
+                                    password=config2.PW,
+                                    host=config2.host,
+                                    port=config2.port,
+                                    database=config2.database)
+
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT name, ideology from members WHERE name ='{member_name}' ;")
+        results = cursor.fetchall()
+        if results == []:
+            print("This band member isn't in the database, please check your spelling and try again.")
+        else:
+            print("Below are the member details:")
+            print(results)
+            
+            cursor.execute(f"SELECT bands.name, bands.ideology, timeframes.joined_year, timeframes.left_year from members join bands_members on members.id = bands_members.member_id  join bands on bands_members.band_id = bands.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE members.name ='{member_name}';")
+            band_results = cursor.fetchall()
+            if band_results == []:
+                print("There are no bands this member has belonged to in the database.")
+            else:            
+                print("They have belonged to the following bands:")
+                print(band_results)
+        
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
     finally:

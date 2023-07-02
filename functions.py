@@ -30,10 +30,8 @@ def add():
         logo = input("Please enter a URL link to the band's logo. If you don't have a link please enter 'None'. ")
         print("Now accessing the database, please wait.")
         if logo == "none" or logo == "None" or logo == "n" or logo == "N":
-            print("Now accessing the database, please wait...")
             add_band(band_name, ideology)
         else:
-            print("Now accessing the database, please wait...")
             add_band(band_name, ideology, logo)
     
         value2 = input("Would you also like to add band members for this band? ")
@@ -195,5 +193,18 @@ def update():
 
     else:
         return
+    
 def search():
-    pass
+    value = input("Would you like to search for a band or a band member? Press 'C' to cancel. ")
+    if value.lower() == "band" or value.lower() == "b":
+        band_name = input("Please enter the name of the band. ")
+        print("Now accessing the database, please wait...")
+        band_search(band_name)
+
+    if value.lower() == "band member" or value.lower() == "member" or value.lower() == "m":
+        member_name = input("Please enter the name of the band member. ")
+        print("Now accessing the database, please wait...")
+        member_search(member_name)
+
+    else:
+        return
