@@ -11,6 +11,7 @@ This tool was created as a project forming part of my Codecademy computer scienc
 
 The database was created with PostgreSQL based on the ER diagram below:
 ![ER Diagram](https://github.com/AndreaDavies228/band_database/blob/main/ER%20Diagram.png)
+
 It contains bands, their ideologies and a link to the band logo.
 It also contains band members, which bands they've belonged to and when they joined or left.
 
