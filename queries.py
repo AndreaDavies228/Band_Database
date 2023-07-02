@@ -59,15 +59,18 @@ def add_member(name, band, ideology, join_year, leave_year):
                 print("This band doesn't exist in the database yet. Please add the band first.")
                 break
 
-            if member_exists == [(False,)]:
-                cursor.execute(f"INSERT INTO members (name, ideology) VALUES ('{name}', '{ideology}')")
-
             if member_exists == [(True,)] and band_exists == [(True,)]:
                 cursor.execute(f"select exists(select 1 from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band}') and member_id=(SELECT id from members WHERE members.name ='{name}'))")
                 combo_exists = cursor.fetchall()
                 if combo_exists == [(True,)]:
                     print("This band member already exists in the database as a member of this band.")
                     break
+                else:
+                    print("This band member already exists in the database. Please use the update option to link them with an additional band.")
+                    break    
+
+            if member_exists == [(False,)]:
+                cursor.execute(f"INSERT INTO members (name, ideology) VALUES ('{name}', '{ideology}')")
 
             cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band}'), (SELECT id from members WHERE members.name ='{name}') );")
             if join_year == "NULL" and leave_year == "NULL":
