@@ -63,10 +63,10 @@ def add_member(name, band, ideology, join_year, leave_year):
                 cursor.execute(f"select exists(select 1 from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band}') and member_id=(SELECT id from members WHERE members.name ='{name}'))")
                 combo_exists = cursor.fetchall()
                 if combo_exists == [(True,)]:
-                    print("This band member already exists in the database as a member of this band.")
+                    print("This band member already exists in the database as a member of this band. To change the information please use the update option.")
                     break
                 else:
-                    print("This band member already exists in the database. Please use the update option to link them with an additional band.")
+                    print("This band member already exists in the database as a member of a different band. Please use the update option if you want to link them with an additional band.")
                     break    
 
             if member_exists == [(False,)]:
