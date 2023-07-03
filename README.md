@@ -16,6 +16,8 @@ To be uploaded
 To run the tool, execute the Script.py file in Python 3.
 The credentials to access the database are stored in a separate config file not uploaded to github. Please use this tool with your own database, or make a request for access.
 
+setup.py can be used with py2exe to create a windows executable file, allowing those without python or coding knowledge to use the tool and access the database.
+
 The psychopg2 module is used to run database queries and tabulate is used to format the results.
 Functions that access the database are contained in the queries.py file, while other functions are in functions.py.
 
