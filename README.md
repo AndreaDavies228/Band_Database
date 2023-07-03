@@ -19,6 +19,13 @@ The credentials to access the database are stored in a separate config file not 
 The psychopg2 module is used to run database queries and tabulate is used to format the results.
 Functions that access the database are contained in the queries.py file, while other functions are in functions.py.
 
+## Current Limitations
+
+The following limitations are planned to be addressed in a future update:
+
+* It's not possible to enter multiple bands or band members with the same name
+* The search function relies on perfect matches (case insensitive)
+
 ## Author
 
 Andrea Davies - Design and Coding
