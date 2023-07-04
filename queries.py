@@ -15,7 +15,7 @@ def add_band(name, ideology, logo=False):
                                     database=config2.database)
 
         cursor = connection.cursor()
-        cursor.execute(f"select exists(select 1 from bands where name='{name}')")
+        cursor.execute(f"select exists(select 1 from bands where name = '{name}')")
         exists = cursor.fetchall()
         if exists == [(True,)]:
             print("This band already exists in the database.")
@@ -25,7 +25,7 @@ def add_band(name, ideology, logo=False):
                 print(f"You have added the band {name}, with the ideology '{ideology}'.")
             else:
                 cursor.execute(f"INSERT INTO bands (name, ideology) VALUES ('{name}', '{ideology}')")
-                cursor.execute(f"INSERT INTO logos (band_id, logo) VALUES ( (SELECT id from bands WHERE bands.name ='{name}'), '{logo}' );")
+                cursor.execute(f"INSERT INTO logos (band_id, logo) VALUES ( (SELECT id from bands WHERE bands.name = '{name}'), '{logo}' );")
                 print(f"You have added the band {name}, with the ideology '{ideology}' and a link to their logo.")
             connection.commit()
         
@@ -35,7 +35,7 @@ def add_band(name, ideology, logo=False):
         if (connection):
             cursor.close()
             connection.close()
-            print("The connection to the database is closed.")
+            print("The connection to the database has been closed.")
 
 def add_member(name, band, ideology, join_year, leave_year):
     name = name.title()
@@ -49,9 +49,9 @@ def add_member(name, band, ideology, join_year, leave_year):
                                     database=config2.database)
 
         cursor = connection.cursor()
-        cursor.execute(f"select exists(select 1 from members where name='{name}')")
+        cursor.execute(f"select exists(select 1 from members where name = '{name}')")
         member_exists = cursor.fetchall()
-        cursor.execute(f"select exists(select 1 from bands where name='{band}')")
+        cursor.execute(f"select exists(select 1 from bands where name = '{band}')")
         band_exists = cursor.fetchall()
 
         while True:
@@ -60,7 +60,7 @@ def add_member(name, band, ideology, join_year, leave_year):
                 break
 
             if member_exists == [(True,)] and band_exists == [(True,)]:
-                cursor.execute(f"select exists(select 1 from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band}') and member_id=(SELECT id from members WHERE members.name ='{name}'))")
+                cursor.execute(f"select exists(select 1 from bands_members where band_id=(SELECT id from bands WHERE bands.name = '{band}') and member_id=(SELECT id from members WHERE members.name = '{name}'))")
                 combo_exists = cursor.fetchall()
                 if combo_exists == [(True,)]:
                     print("This band member already exists in the database as a member of this band. To change the information please use the update option.")
@@ -72,17 +72,17 @@ def add_member(name, band, ideology, join_year, leave_year):
             if member_exists == [(False,)]:
                 cursor.execute(f"INSERT INTO members (name, ideology) VALUES ('{name}', '{ideology}')")
 
-            cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band}'), (SELECT id from members WHERE members.name ='{name}') );")
+            cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name = '{band}'), (SELECT id from members WHERE members.name = '{name}') );")
             if join_year == "NULL" and leave_year == "NULL":
                 print(f"You have added the band member {name}, with the ideology '{ideology} as a member of {band}'.")
             if join_year == "NULL" and leave_year != "NULL":
-                cursor.execute(f"INSERT INTO timeframes (bands_members_id, left_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name ='{band}') and bands_members.member_id = (SELECT id from members WHERE members.name ='{name}')), {leave_year} );")
+                cursor.execute(f"INSERT INTO timeframes (bands_members_id, left_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name = '{band}') and bands_members.member_id = (SELECT id from members WHERE members.name % '{name}')), {leave_year} );")
                 print(f"You have added the band member {name}, with the ideology '{ideology}' who left {band} in {leave_year}.")
             if join_year != "NULL" and leave_year == "NULL":
-                cursor.execute(f"INSERT INTO timeframes (bands_members_id, joined_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name ='{band}') and bands_members.member_id = (SELECT id from members WHERE members.name ='{name}')), {join_year} );")
+                cursor.execute(f"INSERT INTO timeframes (bands_members_id, joined_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name = '{band}') and bands_members.member_id = (SELECT id from members WHERE members.name % '{name}')), {join_year} );")
                 print(f"You have added the band member {name}, with the ideology '{ideology}' who joined {band} in {join_year}.")
             if join_year != "NULL" and leave_year != "NULL":
-                cursor.execute(f"INSERT INTO timeframes (bands_members_id, joined_year, left_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name ='{band}') and bands_members.member_id = (SELECT id from members WHERE members.name ='{name}')), {join_year}, {leave_year} );")
+                cursor.execute(f"INSERT INTO timeframes (bands_members_id, joined_year, left_year) VALUES ( (SELECT id from bands_members WHERE bands_members.band_id = (SELECT id from bands WHERE bands.name = '{band}') and bands_members.member_id = (SELECT id from members WHERE members.name = '{name}')), {join_year}, {leave_year} );")
                 print(f"You have added the band member {name}, with the ideology '{ideology}' who joined {band} in {join_year} and left in {leave_year}.")
             connection.commit()
             break
@@ -93,10 +93,11 @@ def add_member(name, band, ideology, join_year, leave_year):
         if (connection):
             cursor.close()
             connection.close()
-            print("The connection to the database is closed.")
+            print("The connection to the database has been closed.")
 
 def name_check(type, name):
     name = name.title()
+    id = False
     print(f"Checking if {name} exists in the database...")
     try:
         connection = psycopg2.connect(user=config2.user,
@@ -107,11 +108,120 @@ def name_check(type, name):
 
         cursor = connection.cursor()
         if type == "band":
-            cursor.execute(f"select exists(select 1 from bands where name='{name}')")
+            cursor.execute(f"select exists(select 1 from bands where name = '{name}')")
         if type == "member":
-            cursor.execute(f"select exists(select 1 from members where name='{name}')")
+            cursor.execute(f"select exists(select 1 from members where name = '{name}')")
         exists = cursor.fetchall()
+    
+        
+        if exists == [(False,)]:
+            if type == "band":
+                cursor.execute(f"select name, ideology from bands where name % '{name}' ORDER BY similarity(name, '{name}') DESC LIMIT 3;")
+                similar_bands = cursor.fetchall()
+                if similar_bands == []:
+                    print("This band is not in the database.")
+                if similar_bands != []:
+                    print("This band is not in the database. Consider one of these bands instead.")
+                    print(tabulate(similar_bands, headers = ['Name', 'Ideology'], tablefmt = 'psql'))
+                
+            if type == "member":
+                cursor.execute(f"select name, ideology from members where name % '{name}' ORDER BY similarity(name, '{name}') DESC LIMIT 3;")
+                similar_members = cursor.fetchall()
+                if similar_members == []:
+                    print("This band member is not in the databse.")
+                if similar_members != []:
+                    print("This band is not in the database. Consider one of these band members instead.")
+                    print(tabulate(similar_members, headers = ['Name', 'Ideology'], tablefmt = 'psql'))
+                    
+    
+        
+        if exists == [(True,)]:
+            print("This entry is in the databse.")
+            if type == "band":
+                cursor.execute(f"SELECT bands.id, bands.name, bands.ideology, logos.logo FROM bands LEFT JOIN logos on bands.id = logos.band_id where bands.name = '{name}';")
+                band_list = cursor.fetchall()
+                
+                if len(band_list) == 1:
+                    id = band_list[0][0]
+                    
+            
+                if len(band_list) > 1:
+                    print("\nThis database contains multiple bands with that name: ")
+                    output_results = [x[1:] for x in band_list ]
+                    listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
+                    band_id_list = [x[0] for x in band_list]
+                    
+                    print(tabulate(listed_results, headers = ['Band No.', 'Band', 'Ideology', 'Logo'], tablefmt = 'psql'))
+                    counter = 0
+                    for band_id in band_id_list:
+                        counter += 1
+                        cursor.execute(f"SELECT members.name, members.ideology, timeframes.joined_year, timeframes.left_year from bands join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE bands.id = '{band_id}';")
+                        member_results = cursor.fetchall()
+                        if member_results == []:
+                            print(f"\nNo members for band No.{counter} are in the database.")
+                        else:
+                            print(f"\nBand No.{counter} contains the following members:")
+                            print(tabulate(member_results, headers = ['Name', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
+                    while True:
+                        select_band = input("\nWhich band would you like to update? Please enter the number of the band as a numeral. ")
+                        if select_band.lower() == "c" or select_band.lower() == "cancel":
+                            print("Cancelling...")
+                            break
+                        try:
+                            band_number = int(select_band)
+                        except:
+                            print("Invalid input.")
+                            continue
+                        if len(band_list) >= band_number:
+                            id = band_list[band_number-1][0]
+                            break
+                        else:
+                            print("Invalid input.")
+                            continue
 
+            if type == "member":
+                cursor.execute(f"SELECT members.id, members.name, members.ideology, FROM members where members.name = '{name}';")
+                member_list = cursor.fetchall()
+                
+                if len(member_list) == 1:
+                    id = member_list[0][0]
+                    
+            
+                if len(member_list) > 1:
+                    print("\nThis database contains multiple band members with that name: ")
+                    output_results = [x[1:] for x in member_list ]
+                    listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
+                    member_id_list = [x[0] for x in member_list]
+                    
+                    print(tabulate(listed_results, headers = ['member No.', 'Name', 'Ideology', 'Logo'], tablefmt = 'psql'))
+                    counter = 0
+                    for member_id in member_id_list:
+                        counter += 1
+                        cursor.execute(f"SELECT bands.name, bands.ideology, logos.logo FROM bands LEFT JOIN logos on on bands.id = logos.band_id join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id WHERE members.id = '{member_id}';")
+                        band_results = cursor.fetchall()
+                        if band_results == []:
+                            print(f"\nNo members for member No.{counter} are in the database.")
+                        else:
+                            print(f"\nMember No.{counter} has belonged to the following bands:")
+                            print(tabulate(band_results, headers = ['Name', 'Ideology', 'logo'], tablefmt = 'psql'))
+                    while True:
+                        select_member = input("\nWhich member would you like to update? Please enter the number of the band member as a numeral. ")
+                        if select_member.lower() == "c" or select_member.lower() == "cancel":
+                            print("Cancelling...")
+                            break
+                        try:
+                            member_number = int(select_member)
+                        except:
+                            print("Invalid input.")
+                            continue
+                        if len(member_list) >= member_number:
+                            id = member_list[member_number-1][0]
+                            break
+                        else:
+                            print("invalid input")
+                            continue
+        else:
+            return False
         
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
@@ -119,14 +229,9 @@ def name_check(type, name):
         if (connection):
             cursor.close()
             connection.close()
-    
-    if exists == [(True,)]:
-        print("This entry is in the databse.")
-        return True
-    if exists == [(False,)]:
-        return False
+    return id
 
-def update_function(type, band_name="", new_band_name="", ideology="", logo="", member_name="", new_member_name="", joined="", left=""):
+def update_function(type, band_name="", new_band_name="", ideology="", logo="", member_name="", new_member_name="", joined="", left="", band_id="", member_id=""):
     band_name = band_name.title()
     new_band_name = new_band_name.title()
     ideology = ideology.title()
@@ -142,38 +247,39 @@ def update_function(type, band_name="", new_band_name="", ideology="", logo="", 
 
         cursor = connection.cursor()
 
+                       
         if type == "delete_band":
-            cursor.execute(f"delete from bands where name='{band_name}';")
+            cursor.execute(f"delete from bands where id = '{band_id}';")
             print(f"Deleted {band_name}.")
         if type == "update_band_name":
-            cursor.execute(f"update bands set name = '{new_band_name}' where name='{band_name}';")
+            cursor.execute(f"update bands set name = '{new_band_name}' where id = '{band_id}';")
             print(f"Renamed {band_name} to {new_band_name}.")
         if type == "update_band_ideology":
-            cursor.execute(f"update bands set ideology = '{ideology}' where name='{band_name}';")
+            cursor.execute(f"update bands set ideology = '{ideology}' where id = '{band_id}';")
             print(f"Changed ideology for {band_name} to {ideology}.")
         if type == "update_band_logo":
-            cursor.execute(f"update logos set logo = '{logo}' where band_id =(SELECT id from bands WHERE bands.name ='{band_name}');")
+            cursor.execute(f"update logos set logo = '{logo}' where band_id =(SELECT id from bands WHERE bands.id = '{band_id}');")
             print(f"Changed logo for {band_name} to {logo}.")
         if type == "delete_member":
-            cursor.execute(f"delete from members where name='{member_name}';")
+            cursor.execute(f"delete from members where id = '{member_id}';")
             print(f"Deleted {member_name}.")
         if type == "update_member_name":
-            cursor.execute(f"update members set name = '{new_member_name}' where name='{member_name}';")
+            cursor.execute(f"update members set name = '{new_member_name}' where id = '{member_id}';")
             print(f"Renamed {member_name} to {new_member_name}.")        
         if type == "update_member_ideology":
-            cursor.execute(f"update members set ideology = '{ideology}' where name='{member_name}';")
+            cursor.execute(f"update members set ideology = '{ideology}' where id = '{member_id}';")
             print(f"Changed ideology for {member_name} to {ideology}.")
         if type == "remove_member_band_membership":
-            cursor.execute(f"delete from bands_members where band_id=(SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}');")
+            cursor.execute(f"delete from bands_members where band_id=(SELECT id from bands WHERE bands.id = '{band_id}') and member_id=(SELECT id from members WHERE members.id = '{member_id}');")
             print(f"{member_name} is no long connected to {band_name}.")  
         if type == "add_member_band_membership":
-            cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.name ='{band_name}'), (SELECT id from members WHERE members.name ='{member_name}')")
+            cursor.execute(f"INSERT INTO bands_members (band_id, member_id) VALUES ( (SELECT id from bands WHERE bands.id = '{band_id}'), (SELECT id from members WHERE members.id = '{member_id}')")
             print(f"{member_name} is now connected to {band_name}.") 
         if type == "update_joined_year":
-            cursor.execute(f"update timeframes set joined_year = {joined} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'));")
+            cursor.execute(f"update timeframes set joined_year = {joined} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.id = '{band_id}') and member_id=(SELECT id from members WHERE members.id = '{member_id}'));")
             print(f"Updated the year {member_name} joined {band_name} to {joined}.")  
         if type == "update_left_year":
-            cursor.execute(f"update timeframes set left_year = {left} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.name ='{band_name}') and member_id=(SELECT id from members WHERE members.name ='{member_name}'));")
+            cursor.execute(f"update timeframes set left_year = {left} where bands_members_id='(SELECT id from bands_members WHERE band_id = (SELECT id from bands WHERE bands.id = '{band_id}') and member_id=(SELECT id from members WHERE members.name = '{member_id}'));")
             print(f"Updated the year {member_name} left {band_name} to {joined}.")  
         connection.commit()
 
@@ -184,7 +290,7 @@ def update_function(type, band_name="", new_band_name="", ideology="", logo="", 
         if (connection):
             cursor.close()
             connection.close()
-            print("The connection to the database is closed.")
+            print("The connection to the database has been closed.")
 
 def band_search(band_name):
     band_name = band_name.title()
@@ -197,20 +303,27 @@ def band_search(band_name):
                                     database=config2.database)
 
         cursor = connection.cursor()
-        cursor.execute(f"SELECT bands.name, bands.ideology, logos.logo FROM bands LEFT JOIN logos on bands.id = logos.band_id  WHERE name ='{band_name}' ;")
+        cursor.execute(f"SELECT bands.id, bands.name, bands.ideology, logos.logo FROM bands LEFT JOIN logos on bands.id = logos.band_id  WHERE name % '{band_name}' ORDER BY similarity(name, '{band_name}') DESC LIMIT 3;")
         results = cursor.fetchall()
         if results == []:
-            print("This band isn't in the database, please check your spelling and try again.")
+            print("There aren't any similar bands in the database, please check your spelling and try again.")
         else:
-            print("Below are the band details:")
-            print(tabulate(results, headers = ['Band', 'Ideology', 'Logo'], tablefmt = 'psql'))
-            cursor.execute(f"SELECT members.name, members.ideology, timeframes.joined_year, timeframes.left_year from bands join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE bands.name ='{band_name}';")
-            member_results = cursor.fetchall()
-            if member_results == []:
-                print("No members for this band are in the database.")
-            else:
-                print("This band contains the following members:")
-                print(tabulate(member_results, headers = ['Name', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
+            print("Your search returned the following results:")
+            output_results = [x[1:] for x in results ]
+            listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
+            band__id_list = [x[0] for x in results ]
+            
+            print(tabulate(listed_results, headers = ['Band No.', 'Band', 'Ideology', 'Logo'], tablefmt = 'psql'))
+            counter = 0
+            for band_id in band__id_list:
+                counter += 1
+                cursor.execute(f"SELECT members.name, members.ideology, timeframes.joined_year, timeframes.left_year from bands join bands_members on bands.id = bands_members.band_id  join members on bands_members.member_id = members.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE bands.id = '{band_id}';")
+                member_results = cursor.fetchall()
+                if member_results == []:
+                    print(f"\nNo members for band No.{counter} are in the database.")
+                else:
+                    print(f"\nBand No.{counter} contains the following members:")
+                    print(tabulate(member_results, headers = ['Name', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
         
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
@@ -218,7 +331,7 @@ def band_search(band_name):
         if (connection):
             cursor.close()
             connection.close()
-            print("The connection to the database is closed.")
+            print("The connection to the database has been closed.")
 
 
 
@@ -233,21 +346,27 @@ def member_search(member_name):
                                     database=config2.database)
 
         cursor = connection.cursor()
-        cursor.execute(f"SELECT name, ideology from members WHERE name ='{member_name}' ;")
+        cursor.execute(f"SELECT id, name, ideology from members WHERE name % '{member_name}' ORDER BY similarity(name, '{member_name}') DESC LIMIT 3;")
         results = cursor.fetchall()
         if results == []:
-            print("This band member isn't in the database, please check your spelling and try again.")
+            print("There aren't any similar band members in the database, please check your spelling and try again.")
         else:
-            print("Below are the member details:")
-            print(tabulate(results, headers = ['Name', 'Ideology'], tablefmt = 'psql'))
+            print("Your search returned the following results:")
+            output_results = [x[1:] for x in results ]
+            listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
+            member__id_list = [x[0] for x in results ]
+            print(tabulate(listed_results, headers = ['Member No.', 'Name', 'Ideology'], tablefmt = 'psql'))
             
-            cursor.execute(f"SELECT bands.name, bands.ideology, timeframes.joined_year, timeframes.left_year from members join bands_members on members.id = bands_members.member_id  join bands on bands_members.band_id = bands.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE members.name ='{member_name}';")
-            band_results = cursor.fetchall()
-            if band_results == []:
-                print("There are no bands this member has belonged to in the database.")
-            else:            
-                print("They have belonged to the following bands:")
-                print(tabulate(band_results, headers = ['Band', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
+            counter = 0
+            for member_id in member__id_list:
+                counter += 1
+                cursor.execute(f"SELECT bands.name, bands.ideology, timeframes.joined_year, timeframes.left_year from members join bands_members on members.id = bands_members.member_id  join bands on bands_members.band_id = bands.id join timeframes on timeframes.bands_members_id = bands_members.id WHERE members.id = '{member_id}';")
+                band_results = cursor.fetchall()
+                if band_results == []:
+                    print(f"\nThere are no bands that member No.{counter} has belonged to in the database.")
+                else:            
+                    print(f"\nMember No.{counter} has belonged to the following bands:")
+                    print(tabulate(band_results, headers = ['Band', 'Ideology', 'Year Joined', 'Year Left'], tablefmt = 'psql'))
         
     except (Exception, Error) as error:
         print("Error while connecting to the database.", error)
@@ -255,4 +374,4 @@ def member_search(member_name):
         if (connection):
             cursor.close()
             connection.close()
-            print("The connection to the database is closed.")
+            print("The connection to the database has been closed.")
