@@ -14,7 +14,6 @@ while running == True:
       value = input("\nWould you like to add a band or a band member? Enter 'C' to cancel. ")
       if value == "band" or value == "Band" or value == "b" or value == "B":
         band_added = add_band()
-        print(band_added)
         if band_added != False:
           value2 = input("\nWould you also like to add band members for this band? ")
           if value2.lower() == "y" or value2.lower() == "yes":

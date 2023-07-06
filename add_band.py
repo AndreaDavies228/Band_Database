@@ -31,7 +31,7 @@ def add_band(new_band=False):
             listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
             print(tabulate(listed_results, headers = ['Band No.', 'Name', 'Ideology', 'Logo'], tablefmt = 'psql'))
             while True:
-                check = input("\nDo you still want to add this band? For details on which bands these members belong to enter 'D' for 'details'. ")
+                check = input("\nDo you still want to add this band? \nFor details on which bands these members belong to enter 'D' for 'details'. ")
                 if check.lower() == "y" or check.lower() == "yes":
                     break
                 if check.lower() in ["n", "no", "c", "cancel", "q", "quit"]:
@@ -57,7 +57,7 @@ def add_band(new_band=False):
             if running == True:
                 ideology = input("\nPlease enter the ideology of the band. ")
                 ideology = ideology.title()
-                logo = input("\nPlease enter a URL link to the band's logo. If you don't have a link please enter 'None'. ")
+                logo = input("\nPlease enter a URL link to the band's logo. \nIf you don't have a link please enter 'None'. ")
                 if logo == "none" or logo == "None" or logo == "n" or logo == "N":
                     logo = "None"
                 while True:

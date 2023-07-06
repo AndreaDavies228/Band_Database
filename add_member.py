@@ -29,7 +29,7 @@ def add_member(band_id=False):
                 listed_results = [(i,)+(x) for i, x in enumerate(output_results, 1)]
                 print(tabulate(listed_results, headers = ['Member No.', 'Name', 'Ideology'], tablefmt = 'psql'))
                 while True:
-                    check = input("\nDo you still want to add this band member as a new entry? Changes to existing band members should be done instead using the update option. For details on which bands these members belong to enter 'D' for 'details'. ")
+                    check = input("\nDo you still want to add this band member as a new entry? \nChanges to existing band members should be done instead using the update option. \nFor details on which bands these members belong to enter 'D' for 'details'. ")
                     if check.lower() == "y" or check.lower() == "yes":
                         break
                     if check.lower() in ["n", "no", "c", "cancel", "q", "quit"]:
@@ -57,7 +57,7 @@ def add_member(band_id=False):
                 if band_id == False:
                     entered_band_name = False
                     while entered_band_name == False:
-                        band_name = input("\nPlease enter the name of the band they belong to. If you don't want them to belong to a band, please enter 'None'. ")
+                        band_name = input("\nPlease enter the name of the band they belong to. \nIf you don't want them to belong to a band, please enter 'None'. ")
                         if band_name.lower() == "none" or band_name.lower() == "n":
                             add_to_band = False
                             entered_band_name = True
@@ -74,7 +74,7 @@ def add_member(band_id=False):
                                 print(tabulate(listed_results, headers = ['Band No.', 'Name', 'Ideology', 'Logo'], tablefmt = 'psql'))
                             
                                 while True:
-                                    check = input("\nDo you want to add them to one of these existing bands, or first add a new band? For an existing band enter the band's number as a numeral, for a new band enter 'New'. Otherwise for no band enter 'None'. For details on which bands these members belong to enter 'D' for 'details'. ")
+                                    check = input("\nDo you want to add them to one of these existing bands, or first add a new band? \nFor an existing band enter the band's number as a numeral, for a new band enter 'New'. Otherwise for no band enter 'None'. \nFor details on which bands these members belong to enter 'D' for 'details'. ")
                                     
                                     try:
                                         band_number = int(check)

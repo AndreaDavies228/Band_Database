@@ -3,7 +3,7 @@ from queries import *
 def selection():
     selection = False
     while selection == False:
-        value = input("\nWould you like to add an entry, update an entry, or search the database? Please enter 'A', 'U', or 'S'. Enter 'Q' to quit. ")
+        value = input("\nWould you like to add an entry, update an entry, or search the database? \nPlease enter 'A', 'U', or 'S'. Enter 'Q' to quit. ")
         if value == "A" or value == "a" or value == "Add" or value == "add":
             selection = "A"
             return selection
@@ -40,7 +40,7 @@ def update():
                         continue
 
             while True:
-                value = input("\nWould you like to delete the band, or update band information. Enter 'D' or 'U' or 'C' to cancel. ")
+                value = input("\nWould you like to delete the band, or update band information. \nEnter 'D' or 'U' or 'C' to cancel. ")
             
                 if value.lower() == "delete" or value.lower() == "d":
                     print("\nNow accessing the database, please wait...\n")
