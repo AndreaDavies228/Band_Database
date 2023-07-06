@@ -26,9 +26,9 @@ def update():
         value1 = input("\nWould you like to update a band or a band member? Enter 'C' to cancel. ")
     
         if value1.lower() == "band" or value1.lower() == "b":
-            while True:
-                band_name = input("\nPlease enter the name of the band you want to update. ")
             
+            band_name = input("\nPlease enter the name of the band you want to update. ")
+            while True:
                 band_id = name_check("band", band_name)
                 if band_id != False:
                     break

@@ -3,7 +3,6 @@
 from functions import *
 from add_band import *
 from add_member import *
-from queries import *
 
 print("Welcome to the band database.")
 running = True
