@@ -21,12 +21,6 @@ setup.py can be used with py2exe to create a windows executable file, allowing t
 The psychopg2 module is used to run database queries and tabulate is used to format the results.
 Functions that access the database are contained in the queries.py file, while other functions are in functions.py.
 
-## Current Limitations
-
-The following limitations are planned to be addressed in a future update:
-
-* It's not possible to enter multiple bands or band members with the same name
-* The search function relies on perfect matches (case insensitive)
 
 ## Author
 
@@ -48,13 +42,13 @@ The database can be recreated with the following queries:
 
 CREATE TABLE bands(
 id SERIAL PRIMARY KEY,
-name varchar UNIQUE,
+name varchar,
 ideology varchar
 );
 
 CREATE TABLE members(
 id SERIAL PRIMARY KEY,
-name varchar UNIQUE,
+name varchar,
 ideology varchar
 );
 
