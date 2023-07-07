@@ -5,7 +5,8 @@ By searching for either a band or a band member, this tool will tell you their i
 
 ## Background
 
-This tool was created as a project forming part of my Codecademy computer science course.
+The database was created as project forming part of my Codecademy computer science course, and I have created this tool to enable simplified access to the database. 
+By creating a Windows exe file using py2exe, I was able to share the program to friends without Python or SQL experience, so they are also able to access the same database.
 
 ## Sample Images
 
@@ -14,12 +15,11 @@ To be uploaded
 ## Instructions and Files
 
 To run the tool, execute the Script.py file in Python 3.
-The credentials to access the database are stored in a separate config file not uploaded to github. Please use this tool with your own database, or make a request for access.
-
-setup.py can be used with py2exe to create a windows executable file, allowing those without python or coding knowledge to use the tool and access the database.
+The credentials to access the database hosted on ElephantSQL are stored in a separate config file not uploaded to github. Please use this tool with your own database, or make a request for access.
 
 The psychopg2 module is used to run database queries and tabulate is used to format the results.
-Functions that access the database are contained in the queries.py file, while other functions are in functions.py.
+Functions that access the database are contained in the queries.py, add_band.py and add_member.py files, while other functions are stored in functions.py.
+
 
 
 ## Author
@@ -38,7 +38,7 @@ The database was created with PostgreSQL based on the ER diagram below:
 It contains bands, their ideologies and a link to the band logo.
 It also contains band members, which bands they've belonged to and when they joined or left.
 
-The database can be recreated with the following queries:
+The database can be recreated in PostgreSQL with the following queries:
 
 CREATE TABLE bands(
 id SERIAL PRIMARY KEY,
