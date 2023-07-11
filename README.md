@@ -10,9 +10,9 @@ The database was created as project forming part of my Codecademy computer scien
 
 ## Sample Images
 
-[Example of the sequence for adding a band](https://github.com/AndreaDavies228/band_database/blob/main/add_band.png)
+![Example of the sequence for adding a band](https://github.com/AndreaDavies228/band_database/blob/main/add_band.png)
 
-[Example of the sequence for searching for a band](https://github.com/AndreaDavies228/band_database/blob/main/search_band.png)
+![Example of the sequence for searching for a band](https://github.com/AndreaDavies228/band_database/blob/main/search_band.png)
 
 
 ## Instructions and Files
@@ -23,11 +23,11 @@ The credentials to access the database hosted on ElephantSQL are stored in a sep
 1. Download the repository
 2. In the main directory, create a file config2.py and enter your credentials in the following format:
 
-user=""
-PW=""
-host=""
-port=""
-database=""
+user=""<br>
+PW=""<br>
+host=""<br>
+port=""<br>
+database=""<br>
 
 These credentials will be read by the tool to allow access to your databse.
 
