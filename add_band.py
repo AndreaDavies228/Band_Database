@@ -10,7 +10,7 @@ def add_band(new_band=False):
     else:
         band_name = new_band
     name = band_name.title()
-    print("\nConnecting to the database. Please wait...")
+    print("\nConnecting to the database to check if similar bands exist in the database. Please wait...")
 
     try:
         connection = psycopg2.connect(user=config2.user,
@@ -54,40 +54,43 @@ def add_band(new_band=False):
                     print("\nInvalid input. Please enter 'Y' or 'N'. ")
                     continue
 
-            if running == True:
-                ideology = input("\nPlease enter the ideology of the band. ")
-                ideology = ideology.title()
-                logo = input("\nPlease enter a URL link to the band's logo. \nIf you don't have a link please enter 'None'. ")
-                if logo == "none" or logo == "None" or logo == "n" or logo == "N":
-                    logo = "None"
-                while True:
-                    confirm = input(f"\n{band_name.title()} with ideology {ideology.title()} will be added with logo: {logo}. Enter 'Y' to confirm and 'N' to cancel. ")
-                    if confirm.lower() == "y" or confirm.lower() == "yes":
-                        break
-                    if confirm.lower() == "n" or confirm.lower() == "no":
-                        running = False
-                        
-                        break
-                    else:
-                        print("\nInvalid input. Enter 'Y' or 'N' to confirm or cancel.")
-                        continue
-            
-            if running == True:   
-                if logo == "None":
-                    cursor.execute(f"INSERT INTO bands (name, ideology) VALUES ('{name}', '{ideology}')")
-                    print(f"You have added the band {name}, with the ideology '{ideology}'.")
-                    connection.commit()
-                    cursor.execute(f"SELECT id from bands ORDER BY id DESC LIMIT 1")
-                    new_band_id_tuple = cursor.fetchone()
-                    new_band_id = new_band_id_tuple[0]
+        if results == []:
+            print("\nNo similar bands found.")
+
+        if running == True:
+            ideology = input("\nPlease enter the ideology of the band. ")
+            ideology = ideology.title()
+            logo = input("\nPlease enter a URL link to the band's logo. \nIf you don't have a link please enter 'None'. ")
+            if logo == "none" or logo == "None" or logo == "n" or logo == "N":
+                logo = "None"
+            while True:
+                confirm = input(f"\n{band_name.title()} with ideology {ideology.title()} will be added with logo: {logo}. Enter 'Y' to confirm and 'N' to cancel. ")
+                if confirm.lower() == "y" or confirm.lower() == "yes":
+                    break
+                if confirm.lower() == "n" or confirm.lower() == "no":
+                    running = False
+                    
+                    break
                 else:
-                    cursor.execute(f"INSERT INTO bands (name, ideology) VALUES ('{name}', '{ideology}')")
-                    cursor.execute(f"INSERT INTO logos (band_id, logo) VALUES ( (SELECT id from bands WHERE bands.name = '{name}'), '{logo}' );")
-                    print(f"You have added the band {name}, with the ideology '{ideology}' and a link to their logo.")
-                    connection.commit()
-                    cursor.execute(f"SELECT id from bands ORDER BY id DESC LIMIT 1")
-                    new_band_id_tuple = cursor.fetchone()
-                    new_band_id = new_band_id_tuple[0]
+                    print("\nInvalid input. Enter 'Y' or 'N' to confirm or cancel.")
+                    continue
+        
+        if running == True:   
+            if logo == "None":
+                cursor.execute(f"INSERT INTO bands (name, ideology) VALUES ('{name}', '{ideology}')")
+                print(f"You have added the band {name}, with the ideology '{ideology}'.")
+                connection.commit()
+                cursor.execute(f"SELECT id from bands ORDER BY id DESC LIMIT 1")
+                new_band_id_tuple = cursor.fetchone()
+                new_band_id = new_band_id_tuple[0]
+            else:
+                cursor.execute(f"INSERT INTO bands (name, ideology) VALUES ('{name}', '{ideology}')")
+                cursor.execute(f"INSERT INTO logos (band_id, logo) VALUES ( (SELECT id from bands WHERE bands.name = '{name}'), '{logo}' );")
+                print(f"You have added the band {name}, with the ideology '{ideology}' and a link to their logo.")
+                connection.commit()
+                cursor.execute(f"SELECT id from bands ORDER BY id DESC LIMIT 1")
+                new_band_id_tuple = cursor.fetchone()
+                new_band_id = new_band_id_tuple[0]
                 
                 
         

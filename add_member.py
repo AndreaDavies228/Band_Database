@@ -7,7 +7,7 @@ def add_member(band_id=False):
     add_to_band = True
     add_band = False
     name = input("\nPlease enter the name of the band member. ")
-    print("\nPlease wait while connecting to the database...")
+    print("\nConnecting to the database to check if similar band members exist in the database. Please wait...")
     if name:
         name = name.title()
         try:
@@ -51,7 +51,10 @@ def add_member(band_id=False):
                     else:
                         print("\nInvalid input. Please enter 'Y', 'N' or 'D'. ")
                         continue
-            #check if band exists
+
+            if results == []:
+                print("\nThere are no similar band members already in the database.")
+            
             if running == True:
                 
                 if band_id == False:
