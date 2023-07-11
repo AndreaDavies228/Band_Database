@@ -208,7 +208,7 @@ def add_member(band_id=False):
                                 break
                                 
                             if confirm.lower() == "n" or confirm.lower() == "no" or confirm.lower() == "cancel":
-                                print("\Cancelling...")
+                                print("n\Cancelling...")
                                 running = False
                                 break
                             else:
