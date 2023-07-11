@@ -1,26 +1,45 @@
 # Band Database
 
-This is a terminal interface using Python to access a PostgreSQL database of band idelogies.
+This is a terminal interface using Python 3 to access a PostgreSQL database of band idelogies.
 By searching for either a band or a band member, this tool will tell you their ideology and the ideology of related bands or band members respectively.
+This repository does not include login credentials for the database, only the interface tool.
 
 ## Background
 
 The database was created as project forming part of my Codecademy computer science course, and I have created this tool to enable simplified access to the database. 
-By creating a Windows exe file using py2exe, I was able to share the program to friends without Python or SQL experience, so they are also able to access the same database.
 
 ## Sample Images
 
-To be uploaded
+[Example of the sequence for adding a band](https://github.com/AndreaDavies228/band_database/blob/main/add_band.png)
+
+[Example of the sequence for searching for a band](https://github.com/AndreaDavies228/band_database/blob/main/search_band.png)
+
 
 ## Instructions and Files
 
-To run the tool, execute the Script.py file in Python 3.
-The credentials to access the database hosted on ElephantSQL are stored in a separate config file not uploaded to github. Please use this tool with your own database, or make a request for access.
+The tool runs in Python 3 and requires the modules "psycopg2" and "tabulate".
+The credentials to access the database hosted on ElephantSQL are stored in a separate config file not uploaded to github. Please use this tool with your own database, or make a request for access. SQL queries for creating the database can be found below.
 
-The psychopg2 module is used to run database queries and tabulate is used to format the results.
+1. Download the repository
+2. In the main directory, create a file config2.py and enter your credentials in the following format:
+
+user=""
+PW=""
+host=""
+port=""
+database=""
+
+These credentials will be read by the tool to allow access to your databse.
+
+3. 
+
+To run the tool, execute the Script.py file in the main directory in Python 3:
+
+```bash
+$ python -m Script
+```
+
 Functions that access the database are contained in the queries.py, add_band.py and add_member.py files, while other functions are stored in functions.py.
-
-
 
 ## Author
 
